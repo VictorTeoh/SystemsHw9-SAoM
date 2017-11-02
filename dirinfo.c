@@ -38,10 +38,13 @@ int main(){
 
   printf("Total Directory Size: ");
   while(entry = readdir(d)){
+    //open the directory with the file table stuff 
     if(entry->d_type == DT_REG){
       i += entry->d_reclen;
     }
   }
+
+  
   char retStr[256];
   printf("%s\n", prettyBytes(i, 0, retStr));
   closedir(d);
