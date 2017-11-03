@@ -3,6 +3,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 
 //to nicify the bytes
 char *prettyBytes( long unsigned buff, int B, char *retStr){
@@ -36,20 +37,24 @@ int main(){
   struct dirent  *entry;
   int i = 0;
 
+  //summing the 
+  struct stat sb;
   printf("Total Directory Size: ");
   while(entry = readdir(d)){
-    //open the directory with the file table stuff 
     if(entry->d_type == DT_REG){
-      i += entry->d_reclen;
+      stat(entry->d_name, &sb);
+      i += sb.st_size;
     }
   }
-
-  
+  //reusing prettyBytes
   char retStr[256];
   printf("%s\n", prettyBytes(i, 0, retStr));
+
+  //bring back to the top of the directory
   closedir(d);
   d = opendir( ".");
 
+  //only print out directorites within this directory
   printf("Directories:\n");
   while(entry = readdir(d)){
     if(entry->d_type == DT_DIR){
